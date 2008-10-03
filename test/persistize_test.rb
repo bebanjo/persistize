@@ -6,6 +6,20 @@ require 'activesupport'
 
 require File.dirname(__FILE__) + '/../init'
 
+class Person < ActiveRecord::Base
+  
+  def full_name
+    "#{first_name} #{last_name}"
+  end
+  
+  def initials
+    "#{first_name.first}#{last_name.first}".upcase
+  end
+  
+  persistize :full_name, :initials
+  
+end
+
 class Project < ActiveRecord::Base
   has_many :tasks
   
@@ -23,10 +37,12 @@ ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :dbfile => ":memo
 
 def setup_db
   ActiveRecord::Schema.define(:version => 1) do
+    create_table :people do |t|
+      t.string :first_name, :last_name, :full_name, :initials
+    end
     create_table :projects do |t|
       t.string :name
       t.boolean :completed
-      t.string :hello
     end
     create_table :tasks do |t|
       t.integer :project_id
@@ -44,57 +60,41 @@ end
 
 class PersistizeTest < Test::Unit::TestCase
   
-  context "A project which persistizes Project#hello" do
+  context "A person" do
     
     setup do
       setup_db
-      
-      Project.class_eval do
-
-        def hello
-          @hello_value ||= 'hi'
-        end
-        
-        def bye
-          'bye'
-        end
-        
-        persistize :hello, :bye
-        
-        attr_accessor :hello_value
-      end
-      
-      @project = Project.create
+      @person = Person.create(:first_name => "Jimi", :last_name => "Hendrix")
     end
     
-    should "update the value of hello in the database when created" do
-      assert_equal('hi', @project[:hello])
-      assert_equal(@project, Project.find_by_hello('hi'))
+    should "update the value of full name in the database when created" do
+      assert_equal('Jimi Hendrix', @person[:full_name])
+      assert_equal(@person, Person.find_by_full_name('Jimi Hendrix'))
     end
     
-    should "update the value of hello in the database when updated" do
-      @project.hello_value = 'bye'
-      @project.update_attributes!(:name => 'new name')
-      assert_equal('bye', @project[:hello])
-      assert_equal(@project, Project.find_by_hello('bye'))
+    should "update the value of full name in the database when updated" do
+      @person.update_attributes!(:first_name => "Axl", :last_name => "Rose")
+      assert_equal('Axl Rose', @person[:full_name])
+      assert_equal(@person, Person.find_by_full_name('Axl Rose'))
     end    
     
-    should "not call the method when reading after being saved" do
-      @project.hello_value = 'gutten morgen'
-      assert_equal('hi', @project.hello)
+    should "not update the calculated value until saved" do
+      @person.first_name = 'Axl'
+      assert_equal('Jimi Hendrix', @person.full_name)
+      # TODO: Rethink this behaviour. Do we want to cache or not?
     end
     
     should "call the method when reading before being created" do
-      project = Project.new
-      assert_equal('hi', project.hello)
+      person = Person.new(:first_name => "Jimi", :last_name => "Hendrix")
+      assert_equal('Jimi Hendrix', person.full_name)
     end
     
     should "not be able to manually update hello" do
-      assert_raise(NoMethodError) { @project.hello = 'Catacrock' }
+      assert_raise(NoMethodError) { @person.full_name = 'Catacrock' }
     end
     
-    should "also persistize #bye" do
-      assert_equal('bye', @project[:bye])
+    should "also persistize #initials" do
+      assert_equal('JH', @person[:initials])
     end
     
     teardown do
