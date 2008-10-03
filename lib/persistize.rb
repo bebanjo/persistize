@@ -25,7 +25,7 @@ class ActiveRecord::Base
       before_save "update_#{attribute}"
       
       define_method("update_#{attribute}") do
-        self[method] = send("#{attribute}_calculation")
+        self[attribute] = send("#{attribute}_calculation")
         true # we need to return true to avoid canceling the save
       end
 
