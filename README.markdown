@@ -16,8 +16,41 @@ Just like `memoize` but stores the value as an attribute in the database. You ne
     ...
   
     Person.create(:first_name => 'Jimi', :last_name => 'Hendrix')
-    Person.find_by_full_name('Jimi Hendrix')
+    Person.find_by_full_name('Jimi Hendrix') # #<Person id:1, first_name:"Jimi", last_name:"Hendrix", full_name:"Jimi Hendrix" ...>
   
-This example is just one of the possible applications of this pattern, your imagination is the limit =;-) If you can find a better example, please send it to us.
+Dependency
+----------
+
+Some times you want to update the field not when the record is changed, but when some other associated records are. For example:
+
+    class Project < ActiveRecord::Base
+      has_many :tasks
+      
+      def completed?
+        tasks.any? && tasks.all?(&:completed?)
+      end
+      
+      persistize :completed?, :depending_on => :tasks
+      
+      named_scope :completed, :conditions => { :completed => true }
+      
+    end
+    
+    class Task < ActiveRecord::Base
+      belongs_to :project
+    end
+    
+    ...
+    
+    project = Project.create(:name => 'Rails')
+    task = project.tasks.create(:name => 'Make it scale', :completed => false)    
+    Project.completed  # []
+    
+    task.update_attributes(:completed => true)
+    Project.completed  # [#<Project id:1, name:"Rails", completed:true ...>]
+
+These examples are just some of the possible applications of this pattern, your imagination is the limit =;-) If you can find a better example, please send it to us.
+
+
 
 Copyright (c) 2008 Luismi Cavallé & Sergio Gil, released under the MIT license

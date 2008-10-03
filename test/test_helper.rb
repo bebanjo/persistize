@@ -3,6 +3,7 @@ require 'rubygems'
 require 'shoulda'
 require 'activerecord'
 require 'activesupport'
+require 'ruby-debug'
 
 require File.dirname(__FILE__) + '/../init'
 require File.dirname(__FILE__) + '/models'

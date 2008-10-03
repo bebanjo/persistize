@@ -12,15 +12,20 @@ class Person < ActiveRecord::Base
   
 end
 
+# We need to declare the following classes exactly in this order to make the tests pass.
+# TODO: Find out if the plugin works with a real Rails app where const_missing tries to find an unknown class
+
+class Task < ActiveRecord::Base
+
+end
+
 class Project < ActiveRecord::Base
   has_many :tasks
   
   def completed?
-    tasks.all?(&:completed?)
+    tasks.any? && tasks.all?(&:completed?)
   end
   
-end
-
-class Task < ActiveRecord::Base
-
+  persistize :completed?, :depending_on => :tasks
+  
 end
