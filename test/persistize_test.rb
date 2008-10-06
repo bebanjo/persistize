@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/test_helper'
 
 class PersistizeTest < Test::Unit::TestCase
   
-  context "persistize" do
+  context "Using persistize" do
   
     setup do
       setup_db
@@ -12,7 +12,7 @@ class PersistizeTest < Test::Unit::TestCase
       drop_db
     end
   
-    context "A person" do
+    context "a person" do
     
       setup do
         @person = Person.create(:first_name => "Jimi", :last_name => "Hendrix")
@@ -50,7 +50,7 @@ class PersistizeTest < Test::Unit::TestCase
     
     end
   
-    context "A project with tasks" do
+    context "a project with tasks" do
     
       setup do
         @project = Project.create(:name => "Rails")
@@ -71,6 +71,28 @@ class PersistizeTest < Test::Unit::TestCase
         @task.update_attributes!(:completed => false)
         assert !@project.reload.completed?
       end
+    end
+    
+    context "a company with people and tasks" do
+      
+      setup do
+        @company = Company.create(:name => "BeBanjo")
+      end
+      
+      should "update summary when it is created" do
+        assert_equal("BeBanjo has 0 people and 0 tasks", @company.reload.summary)
+      end
+      
+      should "update summary when a person is created" do
+        @company.people.create(:first_name => 'Bruce', :last_name => 'Dickinson')
+        assert_equal("BeBanjo has 1 people and 0 tasks", @company.reload.summary)
+      end
+      
+      should "update summary when a task created" do
+        @company.tasks.create
+        assert_equal("BeBanjo has 0 people and 1 tasks", @company.reload.summary)
+      end
+      
     end
   
   end

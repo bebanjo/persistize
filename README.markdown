@@ -48,13 +48,16 @@ Some times you want to update the field not when the record is changed, but when
     
     task.update_attributes(:completed => true)
     Project.completed  # [#<Project id:1, name:"Rails", completed:true ...>]
+    
+You can add more than one dependency using an array:
+
+    persistize :summary, :depending_on => [ :projects, :people, :tasks ]
 
 These examples are just some of the possible applications of this pattern, your imagination is the limit =;-) If you can find a better example, please send it to us.
 
 To-do
 -----
 
-* More than one dependency
 * More kinds of dependencies (`belongs_to`, `has_one`, `has_many :through`)
 * Making cache optional (cache can cause records to be inconsistent if changed and not saved so it would be nice to be able to deactivate it)
 

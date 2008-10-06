@@ -30,16 +30,21 @@ class ActiveRecord::Base
       end
 
       if options && options[:depending_on]
-        association = self.reflections[options[:depending_on]]
-        me = self
-        association.klass.class_eval do
-          define_method("update_#{attribute}_in_parent") do
-            parent = me.find(self[association.primary_key_name])
-            parent.send("update_#{attribute}")
-            parent.save!            
-          end
-          after_save "update_#{attribute}_in_parent"
-          after_destroy "update_#{attribute}_in_parent"
+        dependencies = options[:depending_on].is_a?(Array) ? options[:depending_on] : [options[:depending_on]]
+        dependencies.each do |dependency|
+          association = self.reflections[dependency]
+          me = self
+          callback = "update_#{attribute}_in_#{me.to_s.underscore}"
+          association.klass.class_eval do
+            define_method(callback) do
+              return true unless parent_id = self[association.primary_key_name]
+              parent = me.find(parent_id)
+              parent.send("update_#{attribute}")
+              parent.save!            
+            end
+            after_save callback
+            after_destroy callback
+          end          
         end
       end
       
