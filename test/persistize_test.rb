@@ -40,10 +40,6 @@ class PersistizeTest < Test::Unit::TestCase
         assert_equal('Jimi Hendrix', person.full_name)
       end
     
-      should "not be able to manually update full name" do
-        assert_raise(NoMethodError) { @person.full_name = 'Catacrock' }
-      end
-    
       should "also persistize #initials" do
         assert_equal('JH', @person[:initials])
       end

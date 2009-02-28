@@ -17,16 +17,12 @@ class ActiveRecord::Base
           self[attribute]
         end
       end
-      
-      define_method("#{attribute}=") do
-        raise NoMethodError
-      end
 
       before_save "update_#{attribute}"
       
       define_method("update_#{attribute}") do
         self[attribute] = send("#{attribute}_calculation")
-        true # we need to return true to avoid canceling the save
+        true # return true to avoid canceling the save
       end
 
       if options && options[:depending_on]
