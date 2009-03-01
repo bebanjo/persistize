@@ -55,18 +55,19 @@ class PersistizeTest < Test::Unit::TestCase
       
       should "update @project#completed? when a new task is created" do
         Task.create(:project_id => @project.id, :completed => false)
-        assert !@project.reload.completed?
+        assert !@project.reload[:completed]
       end
     
       should "update @project#completed? when a task is deleted" do
         @task.destroy
-        assert !@project.reload.completed?
+        assert !@project.reload[:completed]
       end
       
       should "update @project#completed? when a task is updated" do
         @task.update_attributes!(:completed => false)
-        assert !@project.reload.completed?
+        assert !@project.reload[:completed]
       end
+      
     end
     
     context "a company with people and tasks" do
@@ -76,17 +77,17 @@ class PersistizeTest < Test::Unit::TestCase
       end
       
       should "update summary when it is created" do
-        assert_equal("BeBanjo has 0 people and 0 tasks", @company.reload.summary)
+        assert_equal("BeBanjo has 0 people and 0 tasks", @company.reload[:summary])
       end
       
       should "update summary when a person is created" do
         @company.people.create(:first_name => 'Bruce', :last_name => 'Dickinson')
-        assert_equal("BeBanjo has 1 people and 0 tasks", @company.reload.summary)
+        assert_equal("BeBanjo has 1 people and 0 tasks", @company.reload[:summary])
       end
       
       should "update summary when a task created" do
         @company.tasks.create
-        assert_equal("BeBanjo has 0 people and 1 tasks", @company.reload.summary)
+        assert_equal("BeBanjo has 0 people and 1 tasks", @company.reload[:summary])
       end
       
     end
