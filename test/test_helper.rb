@@ -6,8 +6,8 @@ require 'activesupport'
 require 'ruby-debug'
 
 require File.dirname(__FILE__) + '/../init'
-require File.dirname(__FILE__) + '/models'
 
+ActiveSupport::Dependencies.load_paths << File.dirname(__FILE__) + '/models'
 
 ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :dbfile => ":memory:")
 ActiveRecord::Schema.verbose = false
