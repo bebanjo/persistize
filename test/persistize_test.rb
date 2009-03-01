@@ -68,6 +68,10 @@ class PersistizeTest < Test::Unit::TestCase
         assert !@project.reload[:completed]
       end
       
+      should "update each task's #project_name when the project name is updated" do
+        @project.update_attributes!(:name => "Merb")
+        assert_equal "Merb", @task.reload[:project_name]
+      end
     end
     
     context "a company with people and tasks" do

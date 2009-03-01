@@ -25,6 +25,7 @@ def setup_db
     create_table :tasks do |t|
       t.integer :project_id, :company_id
       t.boolean :completed
+      t.string  :project_name
     end
     create_table :companies do |t|
       t.string :name, :summary
