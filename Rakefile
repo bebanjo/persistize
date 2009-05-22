@@ -20,3 +20,16 @@ Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_files.include('README')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gemspec|
+    gemspec.name = "persistize"
+    gemspec.authors = ["Sergio Gil", "Luismi Cavallé"]
+    gemspec.email = "ballsbreaking@bebanjo.com"
+    gemspec.homepage = "http://github.com/bebanjo/persistize"
+    gemspec.summary = "Easy denormalization for your ActiveRecord models"
+    gemspec.extra_rdoc_files = ["README.rdoc"]
+  end
+rescue LoadError
+end
