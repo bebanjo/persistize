@@ -95,6 +95,20 @@ class PersistizeTest < Test::Unit::TestCase
       end
       
     end
+    
+    context "a person with projects and tasks" do
+      
+      setup do
+        @person = Person.create(:first_name => "Enjuto", :last_name => "Mojamuto")
+        @project = Project.create(:name => "La Hora Chanante", :person => @person)
+        Project.create(:name => "Wadus", :person => @person)
+        3.times { Task.create(:project => @project)}
+      end
+      
+      should "have info" do
+        assert_equal("Enjuto Mojamuto has 3 tasks in 2 projects", @person.reload[:info])
+      end
+    end
   
   end
   

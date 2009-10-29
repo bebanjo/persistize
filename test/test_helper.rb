@@ -9,18 +9,19 @@ require File.dirname(__FILE__) + '/../init'
 
 ActiveSupport::Dependencies.load_paths << File.dirname(__FILE__) + '/models'
 
-ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :dbfile => ":memory:")
+ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
 ActiveRecord::Schema.verbose = false
 
 def setup_db
   ActiveRecord::Schema.define(:version => 1) do
     create_table :people do |t|
-      t.string :first_name, :last_name, :full_name, :initials
+      t.string :first_name, :last_name, :full_name, :initials, :info
       t.integer :company_id
     end
     create_table :projects do |t|
       t.string :name
       t.boolean :completed
+      t.integer :person_id
     end
     create_table :tasks do |t|
       t.integer :project_id, :company_id

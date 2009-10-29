@@ -48,9 +48,10 @@ module Persistize
     
     def generate_callback(association, update_method)
       callback_name = :"#{update_method}_in_#{self.to_s.underscore}_callback"
-      generate_method = :"generate_#{association.macro}_callback"
+      association_type = "#{association.macro}#{'_through' if association.through_reflection}"
+      generate_method = :"generate_#{association_type}_callback"
       unless respond_to?(generate_method, true)
-        raise "#{association.macro} associations are not supported by persistize" 
+        raise "#{association_type} associations are not supported by persistize" 
       end
       send(generate_method, association, update_method, callback_name)
     end
@@ -64,6 +65,20 @@ module Persistize
         end                                                                      # end
         after_save :#{callback_name}                                             # after_save :_update_completed_in_project_callback
         after_destroy :#{callback_name}                                          # after_destroy :_update_completed_in_project_callback
+      RUBY
+    end
+    
+    def generate_has_many_through_callback(association, update_method, callback_name)                         
+      association.klass.class_eval <<-RUBY, __FILE__, __LINE__ + 1
+        def #{callback_name}                                                                                # def _update_completed_in_person_callback
+          return true unless through_id = self[:#{association.through_reflection.association_foreign_key}]  #   return true unless through_id = self[:project_id]
+          through = #{association.through_reflection.class_name}.find(through_id)                           #   through = Project.find(through_id)                         
+          return true unless parent_id = through[:#{association.primary_key_name}]                          #   return true unless parent_id = self[:person_id]
+          parent = #{self.name}.find(parent_id)                                                             #   parent = Person.find(person_id)
+          parent.#{update_method}!                                                                          #   parent._update_completed!
+        end                                                                                                 # end
+        after_save :#{callback_name}                                                                        # after_save :_update_completed_in_person_callback
+        after_destroy :#{callback_name}                                                                     # after_destroy :_update_completed_in_person_callback
       RUBY
     end
     
