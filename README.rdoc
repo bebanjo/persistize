@@ -52,22 +52,22 @@ These examples are just some of the possible applications of this pattern, your 
 
 ==Install
 
-===As a plugin (Rails >= 2.1.0)
-
-  $ script/plugin install git://github.com/porras/persistize.git
-  
-===As a gem (Rails >= 2.1.0)
+===As a gem
 
   # in config/environment.rb
-  config.gem "porras-persistize", :lib => "persistize", :source => "http://gems.github.com"
+  config.gem "persistize"
   
 And then:
 
   $ [sudo] rake gems:install
 
+===As a plugin
+
+  $ script/plugin install git://github.com/porras/persistize.git
+
 ==To-do
 
-* More kinds of dependencies (+has_one+, <code>has_many :through</code>)
+* More kinds of dependencies (+has_one+, <del>has_many :through</del>)
 * Make cache optional (cache can cause records to be inconsistent if changed and not saved so it would be nice to be able to deactivate it)
 
 Copyright (c) 2008 Luismi Cavallé & Sergio Gil, released under the MIT license
