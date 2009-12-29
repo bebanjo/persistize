@@ -31,6 +31,13 @@ def setup_db
     create_table :companies do |t|
       t.string :name, :summary
     end
+    create_table :wadus_things do |t|
+      t.string :summary
+    end
+    create_table :things do |t|
+      t.integer :wadus_thing_id
+      t.string :name
+    end
   end
 end
 

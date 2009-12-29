@@ -47,7 +47,7 @@ module Persistize
     private
     
     def generate_callback(association, update_method)
-      callback_name = :"#{update_method}_in_#{self.to_s.underscore}_callback"
+      callback_name = :"#{update_method}_in_#{self.to_s.underscore.gsub(/\W/, '_')}_callback"
       association_type = "#{association.macro}#{'_through' if association.through_reflection}"
       generate_method = :"generate_#{association_type}_callback"
       unless respond_to?(generate_method, true)

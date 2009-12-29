@@ -109,6 +109,16 @@ class PersistizeTest < Test::Unit::TestCase
         assert_equal("Enjuto Mojamuto has 3 tasks in 2 projects", @person.reload[:info])
       end
     end
+    
+    context "namespaced models" do
+      
+      should "access to namespaced models" do
+        @thing = Wadus::Thing.create
+        2.times { |i| @thing.things.create(:name => "Thing number #{i + 1}") }
+        assert_equal("Thing number 1, Thing number 2", @thing.reload[:summary])
+      end
+
+    end
   
   end
   
