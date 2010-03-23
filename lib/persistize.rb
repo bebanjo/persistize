@@ -13,7 +13,7 @@ module Persistize
           alias #{original_method} #{method}                # alias _unpersistized_full_name full_name
                                                             # 
           def #{method}                                     # def full_name
-            if new_record?                                  #   if new_record?
+            if new_record? || changed?                      #   if new_record? || changed?
               #{original_method}                            #     _unpersistized_full_name
             else                                            #   else
               self[:#{attribute}]                           #     self[:full_name]

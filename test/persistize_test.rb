@@ -29,10 +29,9 @@ class PersistizeTest < Test::Unit::TestCase
         assert_equal(@person, Person.find_by_full_name('Axl Rose'))
       end    
     
-      should "not update the calculated value until saved" do
+      should "call the method when object is dirty" do
         @person.first_name = 'Axl'
-        assert_equal('Jimi Hendrix', @person.full_name)
-        # TODO: Rethink this behaviour. Do we want to cache or not?
+        assert_equal('Axl Hendrix', @person.full_name)
       end
     
       should "call the method when reading before being created" do
