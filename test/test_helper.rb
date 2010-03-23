@@ -1,8 +1,8 @@
 require 'test/unit'
 require 'rubygems'
 require 'shoulda'
-require 'activerecord'
-require 'activesupport'
+require 'active_record'
+require 'active_support'
 require 'ruby-debug'
 
 require File.dirname(__FILE__) + '/../init'
