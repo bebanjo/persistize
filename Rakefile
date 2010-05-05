@@ -15,7 +15,7 @@ spec = Gem::Specification.new do |s|
 
   # Change these as appropriate
   s.name              = "persistize"
-  s.version           = "0.1.1"
+  s.version           = "0.1.2"
   s.summary           = "Easy denormalization for your ActiveRecord models"
   s.authors           =  ["Sergio Gil", "Luismi Cavallé"]
   s.email             = "ballsbreaking@bebanjo.com"
