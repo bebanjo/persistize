@@ -17,7 +17,7 @@ ActiveRecord::Schema.verbose = false
 def setup_db
   ActiveRecord::Schema.define(:version => 1) do
     create_table :people do |t|
-      t.string :first_name, :last_name, :full_name, :initials, :info
+      t.string :first_name, :last_name, :full_name, :initials, :info, :city_sentence
       t.integer :company_id
     end
     create_table :projects do |t|
@@ -39,6 +39,10 @@ def setup_db
     create_table :things do |t|
       t.integer :wadus_thing_id
       t.string :name
+    end
+    create_table :addresses do |t|
+      t.integer :person_id
+      t.string :city
     end
   end
 end

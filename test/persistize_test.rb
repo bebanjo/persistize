@@ -118,7 +118,34 @@ class PersistizeTest < Test::Unit::TestCase
       end
 
     end
-  
+    
+    context "a person with an address" do
+      
+      setup do
+        @person = Person.create!(:first_name => "Tomas", :last_name => "Ujfalusi")
+      end
+      
+      should "update city_sentence when person is created" do
+        assert_equal "Tomas hasn't told us where he lives", @person[:city_sentence]
+      end
+      
+      should "update city_sentence when address is created" do
+        @person.create_address(:city => "Madrid")
+        assert_equal "Tomas lives in Madrid", @person.reload[:city_sentence]
+      end
+      
+      should "update city_sentence when address is updated" do
+        @address = @person.create_address(:city => "Madrid")
+        @address.update_attributes!(:city => "Tarancón")
+        assert_equal "Tomas lives in Tarancón", @person.reload[:city_sentence]
+      end
+      
+      should "update city_sentence when address is deleted" do
+        @address = @person.create_address(:city => "Madrid")
+        @address.destroy
+        assert_equal "Tomas hasn't told us where he lives", @person.reload[:city_sentence]
+      end
+    end
   end
   
 end

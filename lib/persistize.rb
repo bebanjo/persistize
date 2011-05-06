@@ -69,6 +69,8 @@ module Persistize
       RUBY
     end
     
+    alias_method :generate_has_one_callback, :generate_has_many_callback        # implementation is just the same :)
+    
     def generate_has_many_through_callback(association, update_method, callback_name)                         
       association.klass.class_eval <<-RUBY, __FILE__, __LINE__ + 1
         def #{callback_name}                                                                                # def _update_completed_in_person_callback
