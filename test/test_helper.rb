@@ -1,5 +1,7 @@
+require "rubygems"
+require "bundler/setup"
+
 require 'test/unit'
-require 'rubygems'
 require 'shoulda'
 require 'active_record'
 require 'active_support'
@@ -7,7 +9,7 @@ require 'ruby-debug'
 
 require File.dirname(__FILE__) + '/../init'
 
-ActiveSupport::Dependencies.load_paths << File.dirname(__FILE__) + '/models'
+ActiveSupport::Dependencies.autoload_paths << File.dirname(__FILE__) + '/models'
 
 ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
 ActiveRecord::Schema.verbose = false
