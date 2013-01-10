@@ -60,7 +60,7 @@ module Persistize
     def generate_has_many_callback(association, update_method, callback_name)
       association.klass.class_eval <<-RUBY, __FILE__, __LINE__ + 1
         def #{callback_name}                                                     # def _update_completed_in_project_callback
-          return true unless parent_id = self[:#{association.primary_key_name}]  #   return true unless parent_id = self[:project_id]
+          return true unless parent_id = self[:#{association.foreign_key}]       #   return true unless parent_id = self[:project_id]
           parent = #{self.name}.find(parent_id)                                  #   parent = Project.find(parent_id)
           parent.#{update_method}!                                               #   parent._update_completed!
         end                                                                      # end
@@ -75,8 +75,8 @@ module Persistize
       association.klass.class_eval <<-RUBY, __FILE__, __LINE__ + 1
         def #{callback_name}                                                                                # def _update_completed_in_person_callback
           return true unless through_id = self[:#{association.through_reflection.association_foreign_key}]  #   return true unless through_id = self[:project_id]
-          through = #{association.through_reflection.class_name}.find(through_id)                           #   through = Project.find(through_id)                         
-          return true unless parent_id = through[:#{association.primary_key_name}]                          #   return true unless parent_id = self[:person_id]
+          through = #{association.through_reflection.class_name}.find(through_id)                           #   through = Project.find(through_id)
+          return true unless parent_id = through[:#{association.through_reflection.foreign_key}]            #   return true unless parent_id = self[:person_id]
           parent = #{self.name}.find(parent_id)                                                             #   parent = Person.find(person_id)
           parent.#{update_method}!                                                                          #   parent._update_completed!
         end                                                                                                 # end
@@ -88,7 +88,7 @@ module Persistize
     def generate_belongs_to_callback(association, update_method, callback_name)
       association.klass.class_eval <<-RUBY, __FILE__, __LINE__ + 1
         def #{callback_name}                                                                  # def _update_project_name_in_task_callback
-          childs = #{self.name}.all(:conditions => {:#{association.primary_key_name} => id})  #   childs = Task.all(:conditions => {:project_id => id})
+          childs = #{self.name}.all(:conditions => {:#{association.foreign_key} => id})       #   childs = Task.all(:conditions => {:project_id => id})
           childs.each(&:"#{update_method}!")                                                  #   childs.each(&:"_update_project_name!")
         end                                                                                   # end
         after_save :#{callback_name}                                                          # after_save :_update_project_name_in_task_callback

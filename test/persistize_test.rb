@@ -101,7 +101,7 @@ class PersistizeTest < Test::Unit::TestCase
         @person = Person.create(:first_name => "Enjuto", :last_name => "Mojamuto")
         @project = Project.create(:name => "La Hora Chanante", :person => @person)
         Project.create(:name => "Wadus", :person => @person)
-        3.times { Task.create(:project => @project)}
+        3.times { Task.create(:project => @project) }
       end
       
       should "have info" do

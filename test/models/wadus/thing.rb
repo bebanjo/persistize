@@ -1,6 +1,8 @@
 class Wadus::Thing < ActiveRecord::Base
-  set_table_name :wadus_things
+  self.table_name = :wadus_things
+
   has_many :things, :class_name => "::Thing", :foreign_key => "wadus_thing_id"
+
   def summary
     things.map(&:name).join(", ")
   end

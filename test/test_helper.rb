@@ -3,15 +3,18 @@ require "bundler/setup"
 
 require 'test/unit'
 require 'shoulda'
+require 'sqlite3'
 require 'active_record'
-require 'active_support'
+require 'active_support/all'
 require 'ruby-debug'
 
 require File.dirname(__FILE__) + '/../init'
 
 ActiveSupport::Dependencies.autoload_paths << File.dirname(__FILE__) + '/models'
 
-ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
+ActiveRecord::Base.configurations = {'test' => {:adapter => 'sqlite3', :database => ':memory:'}}
+ActiveRecord::Base.establish_connection('test')
+
 ActiveRecord::Schema.verbose = false
 
 def setup_db

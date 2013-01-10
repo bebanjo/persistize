@@ -7,8 +7,8 @@ end
 
 task :default => ["test"]
 
-require "rake/rdoctask"
-Rake::RDocTask.new do |rd|
+require "rdoc/task"
+RDoc::Task.new do |rd|
   rd.main = "README.rdoc"
   rd.rdoc_files.include("README.rdoc", "lib/**/*.rb")
   rd.rdoc_dir = "rdoc"
