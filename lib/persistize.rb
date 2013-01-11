@@ -87,12 +87,12 @@ module Persistize
     
     def generate_belongs_to_callback(association, update_method, callback_name)
       association.klass.class_eval <<-RUBY, __FILE__, __LINE__ + 1
-        def #{callback_name}                                                                  # def _update_project_name_in_task_callback
-          childs = #{self.name}.all(:conditions => {:#{association.foreign_key} => id})       #   childs = Task.all(:conditions => {:project_id => id})
-          childs.each(&:"#{update_method}!")                                                  #   childs.each(&:"_update_project_name!")
-        end                                                                                   # end
-        after_save :#{callback_name}                                                          # after_save :_update_project_name_in_task_callback
-        after_destroy :#{callback_name}                                                       # after_destroy :_update_project_name_in_task_callback
+        def #{callback_name}                                               # def _update_project_name_in_task_callback
+          childs = #{self.name}.where({:#{association.foreign_key} => id}) #   childs = Task.where({:project_id => id})
+          childs.each(&:"#{update_method}!")                               #   childs.each(&:"_update_project_name!")
+        end                                                                # end
+        after_save :#{callback_name}                                       # after_save :_update_project_name_in_task_callback
+        after_destroy :#{callback_name}                                    # after_destroy :_update_project_name_in_task_callback
       RUBY
     end
   
