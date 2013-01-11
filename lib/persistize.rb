@@ -1,8 +1,13 @@
 module Persistize
+  mattr_accessor :performant
+  self.performant = true
+
   module ClassMethods
     def persistize(*args)
-      options = args.pop if args.last.is_a?(Hash)
-      
+      options = args.extract_options!
+
+      performant = {:performant => ::Persistize.performant}.merge(options)[:performant]
+
       args.each do |method|
         attribute = method.to_s.sub(/\?$/, '')
         
@@ -10,28 +15,33 @@ module Persistize
         update_method   = :"_update_#{attribute}"
         
         class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          alias #{original_method} #{method}                  # alias _unpersistized_full_name full_name
-                                                              # 
-          def #{method}                                       # def full_name
-            if new_record? || changed?                        #   if new_record? || changed?
-              #{original_method}                              #     _unpersistized_full_name
-            else                                              #   else
-              self[:#{attribute}]                             #     self[:full_name]
-            end                                               #   end
-          end                                                 # end
-                                                              # 
-          before_save :#{update_method}, :if => :changed?     # before_save :_update_full_name
-                                                              # 
-          def #{update_method}                                # def _update_full_name
-            self[:#{attribute}] = #{original_method}          #   self[:full_name] = _unpersistized_full_name
-            true # return true to avoid canceling the save    #   true
-          end                                                 # end
-                                                              # 
-          def #{update_method}!                               # def _update_full_name!
-            new_#{attribute} = #{original_method}             #   new_full_name = _unpersistized_full_name
-            return if new_#{attribute} == self[:#{attribute}] #   return if new_full_name == self[:full_name]
-            update_attribute :#{attribute}, new_#{attribute}  #   update_attribute :full_name, new_full_name 
-          end                                                 # end
+          alias #{original_method} #{method}                    # alias _unpersistized_full_name full_name
+                                                                #
+          def #{method}                                         # def full_name
+            if new_record? || changed?                          #   if new_record? || changed?
+              #{original_method}                                #     _unpersistized_full_name
+            else                                                #   else
+              self[:#{attribute}]                               #     self[:full_name]
+            end                                                 #   end
+          end                                                   # end
+                                                                #
+          before_save :#{update_method}, :if => :changed?       # before_save :_update_full_name
+                                                                #
+          def #{update_method}                                  # def _update_full_name
+            self[:#{attribute}] = #{original_method}            #   self[:full_name] = _unpersistized_full_name
+            true # return true to avoid canceling the save      #   true
+          end                                                   # end
+                                                                #
+          def #{update_method}!                                 # def _update_full_name!
+            if #{performant}                                    #   if performant
+              new_#{attribute} = #{original_method}             #     new_full_name = _unpersistized_full_name
+              return if new_#{attribute} == self[:#{attribute}] #     return if new_full_name == self[:full_name]
+              update_attribute :#{attribute}, new_#{attribute}  #     update_attribute :full_name, new_full_name
+            else                                                #   else
+              #{update_method}                                  #     _update_full_name
+              save! if #{attribute}_changed?                    #     save! if full_name_changed?
+            end                                                 #   end
+          end                                                   # end
         RUBY
 
         if options && options[:depending_on]
