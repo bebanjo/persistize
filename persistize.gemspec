@@ -6,7 +6,6 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Sergio Gil", "Luismi Cavallé"]
-  s.date = Date.today.strftime("%Y-%m-%d")
   s.email = "ballsbreaking@bebanjo.com"
   s.extra_rdoc_files = ["README.rdoc"]
   s.files = %w(init.rb MIT-LICENSE persistize.gemspec Rakefile README.rdoc) + Dir.glob("{test,lib/**/*}")
