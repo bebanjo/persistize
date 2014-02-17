@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Sergio Gil", "Luismi Cavallé"]
+  s.authors = ["Sergio Gil", "Luismi Cavallé", "Paco Guzmán"]
   s.email = "ballsbreaking@bebanjo.com"
   s.extra_rdoc_files = ["README.rdoc"]
   s.files = %w(init.rb MIT-LICENSE persistize.gemspec Rakefile README.rdoc) + Dir.glob("{test,lib/**/*}")
@@ -17,8 +17,7 @@ Gem::Specification.new do |s|
   s.specification_version = 3 if s.respond_to? :specification_version
   
   s.add_dependency("activerecord", ">= 3.1.0")
-  
-  s.add_development_dependency("ruby-debug")
+
   s.add_development_dependency("shoulda")
   s.add_development_dependency("rake")
   s.add_development_dependency("rdoc")

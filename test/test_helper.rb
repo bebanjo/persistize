@@ -6,10 +6,12 @@ require 'shoulda'
 require 'sqlite3'
 require 'active_record'
 require 'active_support/all'
-require 'ruby-debug'
 
 require File.dirname(__FILE__) + '/../init'
+require 'persistize/active_record'
+ActiveRecord::Base.extend Persistize::ActiveRecord::ClassMethods
 
+require 'active_support/dependencies'
 ActiveSupport::Dependencies.autoload_paths << File.dirname(__FILE__) + '/models'
 
 ActiveRecord::Base.configurations = {'test' => {:adapter => 'sqlite3', :database => ':memory:'}}
