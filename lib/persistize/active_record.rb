@@ -26,7 +26,8 @@ module Persistize
               end                                                 #   end
             end                                                   # end
                                                                   #
-            before_save :#{update_method}, :if => :changed?       # before_save :_update_full_name
+            before_create :#{update_method}                       # before_create :_update_full_name
+            before_update :#{update_method}, :if => :changed?     # before_update :_update_full_name, :if => :changed?
                                                                   #
             def #{update_method}                                  # def _update_full_name
               self[:#{attribute}] = #{original_method}            #   self[:full_name] = _unpersistized_full_name
