@@ -1,8 +1,11 @@
 # -*- encoding: utf-8 -*-
 
+$:.unshift File.expand_path('../lib', __FILE__)
+require 'persistize/version'
+
 Gem::Specification.new do |s|
   s.name = "persistize"
-  s.version = "0.2.0"
+  s.version = Persistize::VERSION
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Sergio Gil", "Luismi Cavallé", "Paco Guzmán"]
@@ -16,7 +19,7 @@ Gem::Specification.new do |s|
   s.summary = "Easy denormalization for your ActiveRecord models"
   s.specification_version = 3 if s.respond_to? :specification_version
   
-  s.add_dependency("activerecord", ">= 3.1.0")
+  s.add_dependency("activerecord", ">= 3.1.0", "< 4.0.0")
 
   s.add_development_dependency("shoulda")
   s.add_development_dependency("rake")
