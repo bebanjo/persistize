@@ -64,4 +64,4 @@ And run:
 
 * Make cache optional (cache can cause records to be inconsistent if changed and not saved so it would be nice to be able to deactivate it)
 
-Copyright (c) 2008-2011 Luismi Cavallé & Sergio Gil, released under the MIT license
+Copyright (c) 2008-2014 Luismi Cavallé & Sergio Gil & Paco Guzmán, released under the MIT license
