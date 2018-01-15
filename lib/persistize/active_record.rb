@@ -50,7 +50,7 @@ module Persistize
             dependencies = [options[:depending_on]].flatten
 
             dependencies.each do |dependency|
-              generate_callback(reflections[dependency], update_method)
+              generate_callback(reflections[dependency.to_s], update_method)
             end
           end
 

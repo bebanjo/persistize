@@ -18,8 +18,8 @@ Gem::Specification.new do |s|
   s.rubygems_version = "1.6.2"
   s.summary = "Easy denormalization for your ActiveRecord models"
   s.specification_version = 3 if s.respond_to? :specification_version
-  
-  s.add_dependency("activerecord", ">= 3.1.0", "< 4.0.0")
+
+  s.add_dependency("activerecord", ">= 3.1.0", "< 5")
 
   s.add_development_dependency("shoulda")
   s.add_development_dependency("rake")
