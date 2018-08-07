@@ -76,7 +76,7 @@ module Persistize
             parent = #{self.name}.find(parent_id)                                  #   parent = Project.find(parent_id)
             parent.#{update_method}!                                               #   parent._update_completed!
           end                                                                      # end
-          after_save :#{callback_name}                                             # after_save :_update_completed_in_project_callback
+          after_commit :#{callback_name}, on: [:create, :update]                   # after_commit :_update_completed_in_project_callback, on: [:create, :update]
           after_destroy :#{callback_name}                                          # after_destroy :_update_completed_in_project_callback
         RUBY
       end
@@ -92,7 +92,7 @@ module Persistize
             parent = #{self.name}.find(parent_id)                                                             #   parent = Person.find(person_id)
             parent.#{update_method}!                                                                          #   parent._update_completed!
           end                                                                                                 # end
-          after_save :#{callback_name}                                                                        # after_save :_update_completed_in_person_callback
+          after_commit :#{callback_name}, on: [:create, :update]                                              # after_commit :_update_completed_in_person_callback, on: [:create, :update]
           after_destroy :#{callback_name}                                                                     # after_destroy :_update_completed_in_person_callback
         RUBY
       end
@@ -103,7 +103,7 @@ module Persistize
             childs = #{self.name}.where({:#{association.foreign_key} => id}) #   childs = Task.where({:project_id => id})
             childs.each(&:"#{update_method}!")                               #   childs.each(&:"_update_project_name!")
           end                                                                # end
-          after_save :#{callback_name}                                       # after_save :_update_project_name_in_task_callback
+          after_commit :#{callback_name}, on: [:create, :update]             # after_commit :_update_project_name_in_task_callback, on: [:create, :update]
           after_destroy :#{callback_name}                                    # after_destroy :_update_project_name_in_task_callback
         RUBY
       end
