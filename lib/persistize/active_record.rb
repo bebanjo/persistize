@@ -72,12 +72,20 @@ module Persistize
       def generate_has_many_callback(association, update_method, callback_name)
         association.klass.class_eval <<-RUBY, __FILE__, __LINE__ + 1
           def #{callback_name}                                                     # def _update_completed_in_project_callback
-            return true unless parent_id = self[:#{association.foreign_key}]       #   return true unless parent_id = self[:project_id]
-            parent = #{self.name}.find(parent_id)                                  #   parent = Project.find(parent_id)
+            if #{!!association.has_inverse?}                                       #   if true
+              parent = self.instance_eval { #{association.has_inverse?} }          #     parent = person
+            else                                                                   #   else
+              parent_id = self[:#{association.foreign_key}]                        #     parent_id = self[:project_id]
+              parent = #{self.name}.find(parent_id) if parent_id                   #     parent = Project.find(parent_id) if parent_id
+            end                                                                    #   end
+                                                                                   #
+            return true unless parent                                              #   return true unless parent
+                                                                                   #
+            parent.send(:#{association.name}).try(:reload)                         #   parent.send(:projects).reload
             parent.#{update_method}!                                               #   parent._update_completed!
           end                                                                      # end
-          after_save :#{callback_name}                                             # after_save :_update_completed_in_project_callback
-          after_destroy :#{callback_name}                                          # after_destroy :_update_completed_in_project_callback
+          after_save :#{callback_name}                                             # after_save :_update_completed_in_person_callback
+          after_destroy :#{callback_name}                                          # after_destroy :_update_completed_in_person_callback
         RUBY
       end
 
@@ -85,15 +93,24 @@ module Persistize
 
       def generate_has_many_through_callback(association, update_method, callback_name)
         association.klass.class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def #{callback_name}                                                                                # def _update_completed_in_person_callback
-            return true unless through_id = self[:#{association.through_reflection.association_foreign_key}]  #   return true unless through_id = self[:project_id]
-            through = #{association.through_reflection.class_name}.find(through_id)                           #   through = Project.find(through_id)
-            return true unless parent_id = through[:#{association.through_reflection.foreign_key}]            #   return true unless parent_id = self[:person_id]
-            parent = #{self.name}.find(parent_id)                                                             #   parent = Person.find(person_id)
-            parent.#{update_method}!                                                                          #   parent._update_completed!
-          end                                                                                                 # end
-          after_save :#{callback_name}                                                                        # after_save :_update_completed_in_person_callback
-          after_destroy :#{callback_name}                                                                     # after_destroy :_update_completed_in_person_callback
+          def #{callback_name}                                                                             # def _update_completed_in_person_callback
+            if #{!!association.source_reflection.has_inverse?}                                             #   if true
+              through = self.instance_eval { #{association.source_reflection.has_inverse?} }               #     through = project
+              parent = through.instance_eval { #{association.through_reflection.has_inverse?} } if through #     parent = project.person if through
+            else                                                                                           #   else
+              through_id = self[:#{association.through_reflection.association_foreign_key}]                #     through_id = self[:project_id]
+              through = #{association.through_reflection.class_name}.find(through_id) if through_id        #     through = Project.find(through_id) if through_id
+              parent_id = through[:#{association.through_reflection.foreign_key}] if through               #     parent_id = through[:person_id] if through
+              parent = #{self.name}.find(parent_id) if parent_id                                           #     parent = Person.find(parent_id) if parent_id
+            end                                                                                            #   end
+                                                                                                           #
+            return true unless parent                                                                      #   return true unless parent
+                                                                                                           #
+            parent.send(:#{association.name}).reload                                                       #   parent.send(:tasks).reload
+            parent.#{update_method}!                                                                       #   parent._update_completed!
+          end                                                                                              # end
+          after_save :#{callback_name}                                                                     # after_save :_update_completed_in_person_callback
+          after_destroy :#{callback_name}                                                                  # after_destroy :_update_completed_in_person_callback
         RUBY
       end
 
